@@ -1,2 +1,2 @@
-print("woowom")
-print("jejun")
+print("woowo2m")
+print("jeju2n")
