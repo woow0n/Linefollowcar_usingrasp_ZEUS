@@ -6,9 +6,9 @@ sys.path.append(ap_path + "/control")
 sys.path.append(ap_path + "/recognition")
 sys.path.append(ap_path + "/gui")
 
-#from PySide2.QtWidgets import *
-#from PySide2.QtGui import *
-#from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
+from PySide2.QtCore import *
 from gui.camera import Ui_MainWindow
 from time import *
 import numpy as np
@@ -21,9 +21,9 @@ from control.Raspi_MotorHAT_ import Raspi_MotorHAT, Raspi_DCMotor
 from control.Raspi_PWM_Servo_Driver import PWM
 from control.Raspi_Sonic import Sonic
 
-servoDefault = 300
+servoDefualt = 270
 servoMin = 180  # Min pulse length out of 4096
-servoMax = 400
+servoMax = 350 
 
 
 class mythread(QThread):
@@ -64,9 +64,11 @@ class AutoRcCar(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.main()
-        self.pwm = PWM(0x6F)
+
         self.mh = Raspi_MotorHAT(addr=0x6f)
         self.myMotor = self.mh.getMotor(2)
+        self.pwm = PWM(0x6F)
+        self.pwm.setPWMFreq(60)
         self.flag = 0
 
     def main(self):
@@ -97,7 +99,7 @@ class AutoRcCar(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         self.myMotor.run(Raspi_MotorHAT.RELEASE);
-        self.pwm.setPWM(1, 0, servoDefault)
+        #self.pwm.setDefault()
 
         self.th.__del__()
         self.sonic.__del__()
@@ -112,7 +114,11 @@ class AutoRcCar(QMainWindow, Ui_MainWindow):
         self.flag = 0
 
     def turnleft(self):
-        self.pwm.setPWM(1, 0, servoMin)
+        self.pwm.setPWM(1,0,servoMin)
+    
+    def turnright(self):
+        self.pwm.setPWM(1,0,servoMax)
+
 
 
 app = QApplication([])

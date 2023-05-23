@@ -1,6 +1,12 @@
 #!/usr/bin/python
+import sys
+import os
 
-from Raspi_PWM_Servo_Driver import PWM
+ap_path = os.getcwd()
+sys.path.append(ap_path + "/control")
+sys.path.append(ap_path + "/recognition")
+sys.path.append(ap_path + "/gui")
+from control.Raspi_PWM_Servo_Driver import PWM
 import time
 
 # ===========================================================================
@@ -11,8 +17,9 @@ import time
 # bmp = PWM(0x40, debug=True)
 pwm = PWM(0x6F)
 
-servoMin = 150  # Min pulse length out of 4096
-servoMax = 600  # Max pulse length out of 4096
+servoDefualt = 270
+servoMin = 180  # Min pulse length out of 4096
+servoMax = 350  # Max pulse length out of 4096
 
 def setServoPulse(channel, pulse):
   pulseLength = 1000000                   # 1,000,000 us per second
@@ -24,13 +31,19 @@ def setServoPulse(channel, pulse):
   pulse /= pulseLength
   pwm.setPWM(channel, 0, pulse)
 
+pwm.setPWM(1, 0, servoDefualt)
 pwm.setPWMFreq(60)                        # Set frequency to 60 Hz
-while (True):
+for i in range(3):
   # Change speed of continuous servo on channel O
-  pwm.setPWM(0, 0, servoMin)
+  pwm.setPWM(1, 0, servoMin)
   time.sleep(1)
-  pwm.setPWM(0, 0, servoMax)
+  pwm.setPWM(1, 0, servoMax)
   time.sleep(1)
+  
+  
+pwm.setPWM(1, 0, servoDefualt)
+  
+  
 
 
 

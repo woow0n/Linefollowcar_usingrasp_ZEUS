@@ -8,6 +8,11 @@ from Raspi_I2C import Raspi_I2C
 # Raspi PCA9685 16-Channel PWM Servo Driver
 # ============================================================================
 
+SERVODEFAULT = 270
+SERVOMIN = 180  # Min pulse length out of 4096
+SERVOMAX = 350
+
+
 class PWM :
   # Registers/etc.
   __MODE1              = 0x00
@@ -54,7 +59,13 @@ class PWM :
     mode1 = self.i2c.readU8(self.__MODE1)
     mode1 = mode1 & ~self.__SLEEP                 # wake up (reset sleep)
     self.i2c.write8(self.__MODE1, mode1)
-    time.sleep(0.005)                             # wait for oscillator
+    time.sleep(0.005)
+    self.degree=0  
+    
+    #self.setPWMFreq(60)
+    #self.setDefault()
+    #print(self.degree)                           # wait for oscillator
+
 
   def setPWMFreq(self, freq):
     "Sets the PWM frequency"
@@ -90,3 +101,24 @@ class PWM :
     self.i2c.write8(self.__ALL_LED_ON_H, on >> 8)
     self.i2c.write8(self.__ALL_LED_OFF_L, off & 0xFF)
     self.i2c.write8(self.__ALL_LED_OFF_H, off >> 8)
+    
+    
+  def setDefault(self):
+    self.setPWM(1,0,SERVODEFAULT)
+    #self.degree = SERVODEFAULT
+    #print(self.degree) 
+    
+  def turnRight(self, degree):
+    self.setPWM(1,0,SERVOMAX)
+    self.degree = SERVOMAX
+    print(self.degree) 
+  
+  def turnLeft(self, degree):
+    
+    self.setPWM(1,0,SERVOMIN)
+    self.degree = SERVOMIN
+    print(self.degree) 
+  
+  
+  
+  

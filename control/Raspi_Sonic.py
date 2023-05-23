@@ -41,3 +41,5 @@ class Sonic(QThread):
 
     def __del__(self):
         self.quit()
+        
+        
